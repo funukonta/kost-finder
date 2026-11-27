@@ -66,10 +66,12 @@ Read `assets/template.html` in this skill directory and use it as the base templ
 - `index.html` (if writing inside a dedicated project folder so `python3 -m http.server 8000` serves it immediately at `http://localhost:8000/`).
 
 #### Mandatory Map & UI Requirements (Zero API Key Errors!)
-1. **Free Tile Layer Only (No API Key Required)**:
-   - Always use standard OpenStreetMap tiles as the default layer:
-     `https://tile.openstreetmap.org/{z}/{x}/{y}.png`
-   - Never use Stadia, Mapbox, Google Maps JS API, or Carto Voyager endpoints that trigger *"API key required"* watermarks.
+1. **Free Tile Layers Only (No API Key Required)**:
+   - Keep both base layers already in `assets/template.html`:
+     - OpenStreetMap `https://tile.openstreetmap.org/{z}/{x}/{y}.png` (default when served over http/https)
+     - Carto Voyager raster `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png` (default when opened via `file://`)
+   - **Why two:** OSM's tile server rejects requests with no `Referer` header ("Access blocked"). A double-clicked HTML file (`file://`) sends none, so the map would be blank. Carto does not check Referer, so the file works without a server.
+   - Never use Stadia, Mapbox, or Google Maps JS API tiles; they require an API key and show watermarks.
 2. **Standard Google Maps Links**:
    - Use `https://www.google.com/maps?q=<encoded_query>` for external Google Maps buttons.
 3. **Visual Map Features**:
@@ -84,7 +86,8 @@ Read `assets/template.html` in this skill directory and use it as the base templ
 ### Step 6: Provide Run Instructions
 After writing the HTML file(s), tell the user:
 1. The exact file path generated.
-2. How to launch it locally with Python:
+2. That they can simply double-click the HTML file to open it (the map uses Carto tiles on `file://`).
+3. Optionally, for the standard OpenStreetMap layer by default, serve it locally:
    ```bash
    python3 -m http.server 8000
    ```

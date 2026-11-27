@@ -59,15 +59,13 @@ Then ask it to find you a kos.
 
 ## 🚀 Open your results
 
-When your report is ready, run this in the folder where it was saved:
+Double-click the HTML file. That's it, the map loads right in your browser.
+
+Prefer the classic OpenStreetMap look? Run this in the same folder, then go to **http://localhost:8000**:
 
 ```bash
 python3 -m http.server 8000
 ```
-
-Then go to **http://localhost:8000**. You can also double-click the HTML file.
-
----
 
 ## 📍 Good to know
 

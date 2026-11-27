@@ -395,11 +395,26 @@
       zoom: 15
     });
 
-    // OpenStreetMap Standard Tiles (100% Free, No API Key Required)
+    // Base layers (both free, no API key).
+    // OSM's tile server blocks requests without a Referer header, which is
+    // exactly what a page opened via file:// sends. So on file:// we default
+    // to Carto Voyager (no Referer check); over http(s) we default to OSM.
     const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19
-    }).addTo(map);
+    });
+    const cartoLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
+    });
+    const isFileProtocol = location.protocol === 'file:';
+    (isFileProtocol ? cartoLayer : osmLayer).addTo(map);
+    L.control.layers(
+      { 'OpenStreetMap': osmLayer, 'Carto Voyager': cartoLayer },
+      null,
+      { position: 'topright' }
+    ).addTo(map);
 
     const circle500 = L.circle([CENTER_POINT.lat, CENTER_POINT.lng], {
       radius: 500,
