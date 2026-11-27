@@ -47,15 +47,22 @@ It will ask if it's missing your budget or the kos type. After that it does the 
 
 ## 📦 Install
 
-Put this folder where your AI assistant looks for skills:
+**Using Gemini (easiest, works in your browser)**
+
+1. Download [`gemini/kos-finder-id.zip`](gemini/kos-finder-id.zip) from this repo.
+2. Open [gemini.google.com](https://gemini.google.com) and go to **Skills**.
+3. Click **Create → Upload** and pick the zip.
+4. In any chat, type `/` or `@`, choose **kos-finder-id**, and say what you're looking for.
+
+Gemini can't save files for you, so it gives you the page as text. Copy it into a text editor, save it as `kos-report.html`, then double-click it.
+
+**Using a coding assistant (Claude Code, Pi, Gemini CLI, etc.)**
 
 ```bash
 git clone https://github.com/funukonta/kost-finder.git ~/.agents/skills/kos-finder-id
 ```
 
-Then ask it to find you a kos.
-
----
+Then ask it to find you a kos. This version searches the web and saves the HTML file for you.
 
 ## 🚀 Open your results
 
