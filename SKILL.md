@@ -1,6 +1,6 @@
 ---
 name: kos-finder-id
-description: Search, cross-verify, and rank Indonesian boarding houses (kos/kost) around any user-specified landmark, address, or GPS coordinates within a target budget and gender preference (Putra, Putri, Campur), then generate an interactive split-view HTML report with a free OpenStreetMap Leaflet map, distance radius circles, route polylines, filters, and WhatsApp/Mamikos/Maps action buttons. Use when the user asks to find kos/kost/kosan, cari kos dekat kantor/kampus/stasiun/MRT, compare kos options within a budget, or build an interactive kos map report.
+description: Search, cross-verify, and rank Indonesian boarding houses (kos/kost) around any user-specified landmark, address, or GPS coordinates within a target budget and gender preference (Putra, Putri, Campur), then generate an interactive split-view HTML report with a free Leaflet map (Esri tiles), distance radius circles, route polylines, filters, and WhatsApp/Mamikos/Maps action buttons. Use when the user asks to find kos/kost/kosan, cari kos dekat kantor/kampus/stasiun/MRT, compare kos options within a budget, or build an interactive kos map report.
 ---
 
 # Kos Finder Indonesia (`kos-finder-id`)
@@ -60,7 +60,7 @@ Structure the final list of $N$ kos listings as follows:
 
 ---
 
-### Step 5: Generate the Interactive HTML Report (Leaflet + OpenStreetMap)
+### Step 5: Generate the Interactive HTML Report (Leaflet + Esri tiles)
 Read `assets/template.html` in this skill directory and use it as the base template to write both:
 - `<slug>-kos-report.html` (or user-requested filename)
 - `index.html` (if writing inside a dedicated project folder so `python3 -m http.server 8000` serves it immediately at `http://localhost:8000/`).
