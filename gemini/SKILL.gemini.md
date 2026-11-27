@@ -1,11 +1,11 @@
 ---
 name: kos-finder-id
-description: Find and rank Indonesian boarding houses (kos/kost/kosan) near any landmark, address, or coordinates within a budget and gender preference (Putra, Putri, Campur), then produce a single interactive HTML map page with filters, distance circles, and WhatsApp/Maps buttons. Use when the user asks to cari kos, find a kost near an office, campus, station or MRT, compare kos within a budget, or wants a kos map.
+description: Find and rank Indonesian boarding houses (kos/kost/kosan) near any landmark, address, or coordinates within a budget and gender preference (Putra, Putri, Campur), then produce a single interactive HTML map page in Canvas mode with filters, distance circles, and WhatsApp/Maps buttons. Use when the user asks to cari kos, find a kost near an office, campus, station or MRT, compare kos within a budget, or wants a kos map.
 ---
 
 # Kos Finder Indonesia
 
-Find real kos listings near a place in Indonesia, rank them, and hand the user one HTML file with an interactive map.
+Find real kos listings near a place in Indonesia, rank them, and render one interactive HTML map page using Canvas mode.
 
 ## Ground rules
 
@@ -49,9 +49,9 @@ If you can't search or open pages, say so plainly and ask the user to paste a fe
 - **#1 to #5, recommended:** the best balance of walking distance (under 1 km), room size, price, verified facilities (AC, private bathroom, WiFi, water heater, cleaning, laundry, parking), and no highway to cross. Give each a short `highlight` saying why.
 - **#6 onward:** sort by distance from the center, closest first.
 
-## Step 5: Build the HTML
+## Step 5: Build and Open the HTML in Canvas Mode
 
-Open `assets/template.html` in this skill. Output the **complete file** with these changes:
+Open `assets/template.html` in this skill. Build the **complete file** (`kos-report.html`) with these changes:
 
 1. Replace `{{CENTER_NAME}}`, `{{CENTER_ADDRESS}}`, and `{{BUDGET_LABEL}}` everywhere they appear.
 2. Set `CENTER_POINT.lat` and `CENTER_POINT.lng`.
@@ -65,13 +65,23 @@ Open `assets/template.html` in this skill. Output the **complete file** with the
    - `type` is `"Putra"`, `"Putri"`, or `"Campur"`.
    - `phone` uses the 62 format with no `+` or spaces. Leave it `""` if unknown, and put the source site name in `phoneDisplay` (e.g. `"Mamikos"`).
    - `externalUrl` is the listing page you found.
-4. Don't change the rest of the template. Keep both map layers.
+4. Don't change the rest of the template. Keep both Esri map layers (street and satellite) and the tile-failure fallback described below.
+5. **Always open and render the generated HTML in Canvas mode** (using the web code canvas / preview tool so it opens directly as an interactive preview panel for the user, instead of only dumping raw HTML text in chat). Do not cut the file short or write "rest unchanged".
+6. If Canvas is not available, output the complete file in one `html` code block instead, and tell the user to save it as `kos-report.html` and double-click it.
 
-Put the whole file in **one code block** (`html`) so it can be copied. Don't cut it short or write "rest unchanged".
+### Aturan Teknis Peta Interaktif (Wajib untuk Kompatibilitas Preview & Lokal)
 
-## Step 6: Tell the user how to open it
+Semua aturan ini sudah ada di `assets/template.html`. Jangan diubah.
 
-1. Copy the code block into a text editor and save it as `kos-report.html`.
-2. Double-click the file. It opens in the browser with the map. No server or sign-up needed.
-3. Mention that prices and availability change often, so confirm with the owner before paying anything, and that distances are estimates.
-4. Give a short summary: the top 5 with price and distance, and anything you couldn't verify.
+1. **Jangan gunakan `tile.openstreetmap.org`**: Server publik OpenStreetMap memblokir permintaan dari iframe/sandbox preview dengan status `403 Access Blocked`.
+2. **Gunakan Esri ArcGIS Tile Server (Tanpa API Key)**:
+   - **Peta Jalan (Default):** `https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}`
+   - **Peta Satelit:** `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`
+3. **Fallback otomatis (`tileerror`)**: Template memasang event listener `tileerror` pada layer peta. Jika tile gagal dimuat berulang kali dan belum ada yang berhasil (misalnya offline atau diblokir jaringan ketat), tile layer dihapus dan latar `#map` berubah menjadi grid bersih, sambil tetap menampilkan marker dan lingkaran radius jarak (`500m`, `1km`, `2km`).
+4. **Output dalam Single-File HTML (`kos-report.html`)**: Pastikan seluruh CSS, data kos, dan logika berada dalam satu file `.html` mandiri agar bisa langsung dirender di Canvas / panel Preview maupun dibuka langsung (`file:///`) di browser pengguna tanpa perlu server lokal. Library Leaflet dimuat dari CDN (unpkg), jadi tetap perlu koneksi internet.
+
+## Step 6: Summarize and Share Next Steps
+
+1. Let the user know the interactive map (`kos-report.html`) is open in **Canvas mode**, and they can also download/save it from Canvas or open it directly (`file:///`) in their browser without a local server.
+2. Mention that prices and availability change often, so confirm with the owner before paying anything, and that distances are estimates.
+3. Give a short summary: the top 5 with price and distance, and anything you couldn't verify.

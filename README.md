@@ -54,7 +54,7 @@ It will ask if it's missing your budget or the kos type. After that it does the 
 3. Click **Create → Upload** and pick the zip.
 4. In any chat, type `/` or `@`, choose **kos-finder-id**, and say what you're looking for.
 
-Gemini can't save files for you, so it gives you the page as text. Copy it into a text editor, save it as `kos-report.html`, then double-click it.
+Gemini opens your map in Canvas so you can use it right in the chat. You can also download it and double-click the file later.
 
 **Using a coding assistant (Claude Code, Pi, Gemini CLI, etc.)**
 
