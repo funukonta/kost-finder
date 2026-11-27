@@ -6,6 +6,44 @@ Tell your AI assistant where you'll be working or studying, how much you can spe
 
 ---
 
+## 📦 Install
+
+### 1. Gemini (easiest, works in your browser)
+
+1. Download [`gemini/kos-finder-id.zip`](gemini/kos-finder-id.zip) from this repo.
+2. Open [gemini.google.com](https://gemini.google.com) and go to **Skills**.
+3. Click **Create → Upload** and pick the zip.
+4. In any chat, type `/` or `@`, choose **kos-finder-id**, and say what you're looking for.
+
+Gemini opens your map in Canvas so you can use it right in the chat. You can also download it and double-click the file later.
+
+### 2. AI coding agents (Claude Code, Codex, Cursor, Gemini CLI and more)
+
+One command. It asks which agent you use and sets everything up:
+
+```bash
+npx skills add funukonta/kost-finder
+```
+
+Add `-g` to make it available in every project, not just the current folder:
+
+```bash
+npx skills add funukonta/kost-finder -g
+```
+
+You'll need [Node.js](https://nodejs.org) 22.20 or newer. Then just ask your agent to find you a kos. This version searches the web and saves the HTML file for you.
+
+<details>
+<summary>Prefer to do it by hand?</summary>
+
+```bash
+git clone https://github.com/funukonta/kost-finder.git ~/.agents/skills/kos-finder-id
+```
+
+</details>
+
+---
+
 ## ✨ What you get
 
 Ask for kos near *MRT Blok M, under Rp 2.500.000, putri*, and you get a single page that opens in your browser:
@@ -42,27 +80,6 @@ It will ask if it's missing your budget or the kos type. After that it does the 
 - **Stays in budget**
 - **Double-checks the good deals**: if a listing looks too good, it compares the price against newer pages and tells you what's real
 - **Looks at the walk**: it notes highways and rivers in the way, not just straight-line distance
-
----
-
-## 📦 Install
-
-**Using Gemini (easiest, works in your browser)**
-
-1. Download [`gemini/kos-finder-id.zip`](gemini/kos-finder-id.zip) from this repo.
-2. Open [gemini.google.com](https://gemini.google.com) and go to **Skills**.
-3. Click **Create → Upload** and pick the zip.
-4. In any chat, type `/` or `@`, choose **kos-finder-id**, and say what you're looking for.
-
-Gemini opens your map in Canvas so you can use it right in the chat. You can also download it and double-click the file later.
-
-**Using a coding assistant (Claude Code, Pi, Gemini CLI, etc.)**
-
-```bash
-git clone https://github.com/funukonta/kost-finder.git ~/.agents/skills/kos-finder-id
-```
-
-Then ask it to find you a kos. This version searches the web and saves the HTML file for you.
 
 ## 🚀 Open your results
 
