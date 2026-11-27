@@ -5,7 +5,7 @@ description: Search, cross-verify, and rank Indonesian boarding houses (kos/kost
 
 # Kos Finder Indonesia (`kos-finder-id`)
 
-Find, verify, and visualize boarding houses (*kos/kost*) around a target location or coordinate in Indonesia, ranked by **Top Recommendations (#1–5)** followed by **Distance Order (#6–N)**, and output a self-contained interactive **Leaflet + OpenStreetMap HTML dashboard**.
+Find, verify, and visualize boarding houses (*kos/kost*) around a target location or coordinate in Indonesia, ranked by **Top Recommendations (#1–5)** followed by **Distance Order (#6–N)**, and output a self-contained interactive **Leaflet + Esri tiles HTML dashboard**.
 
 ---
 
