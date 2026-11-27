@@ -129,6 +129,13 @@
     .jump-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 
     #map { width: 100%; height: calc(100vh - 185px); min-height: 540px; }
+    #map.no-tiles {
+      background-color: #eef2f7;
+      background-image:
+        linear-gradient(#d5dde8 1px, transparent 1px),
+        linear-gradient(90deg, #d5dde8 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
 
     .list-panel { display: flex; flex-direction: column; gap: 14px; }
     .controls {
@@ -346,6 +353,7 @@
         <div class="quick-jump-btns">
           <button class="jump-btn" onclick="focusCenter()">🏢 {{CENTER_NAME}}</button>
           <button class="jump-btn" onclick="focusRadius(500)">⭕ Zona Jalan Kaki (&lt;500m)</button>
+          <button class="jump-btn" onclick="focusRadius(2000)">⭕ Radius 2 KM</button>
           <button class="jump-btn" onclick="fitAllMarkers()">🗺️ Tampilkan Semua</button>
         </div>
       </div>
@@ -395,26 +403,42 @@
       zoom: 15
     });
 
-    // Base layers (both free, no API key).
-    // OSM's tile server blocks requests without a Referer header, which is
-    // exactly what a page opened via file:// sends. So on file:// we default
-    // to Carto Voyager (no Referer check); over http(s) we default to OSM.
-    const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    // Esri ArcGIS tiles: free, no API key, and they load inside Canvas/iframe
+    // previews and from file://. (tile.openstreetmap.org returns 403 there.)
+    const esriAttr = 'Tiles &copy; Esri &mdash; Source: Esri, HERE, Garmin, OpenStreetMap contributors';
+    const streetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: esriAttr,
+      maxZoom: 19
+    }).addTo(map);
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
       maxZoom: 19
     });
-    const cartoLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 20
-    });
-    const isFileProtocol = location.protocol === 'file:';
-    (isFileProtocol ? cartoLayer : osmLayer).addTo(map);
-    L.control.layers(
-      { 'OpenStreetMap': osmLayer, 'Carto Voyager': cartoLayer },
+    const layerControl = L.control.layers(
+      { 'Peta Jalan': streetLayer, 'Satelit': satelliteLayer },
       null,
       { position: 'topright' }
     ).addTo(map);
+
+    // Vector fallback: if tiles keep failing (offline, blocked network) and none
+    // ever loaded, drop the tile layers and show a clean grid. Markers and radius
+    // circles stay visible.
+    let tileErrors = 0, tileLoaded = false, fallbackOn = false;
+    function enableGridFallback() {
+      if (fallbackOn) return;
+      fallbackOn = true;
+      map.removeLayer(streetLayer);
+      map.removeLayer(satelliteLayer);
+      map.removeControl(layerControl);
+      document.getElementById('map').classList.add('no-tiles');
+    }
+    [streetLayer, satelliteLayer].forEach(layer => {
+      layer.on('tileload', () => { tileLoaded = true; });
+      layer.on('tileerror', () => {
+        tileErrors++;
+        if (!tileLoaded && tileErrors >= 4) enableGridFallback();
+      });
+    });
 
     const circle500 = L.circle([CENTER_POINT.lat, CENTER_POINT.lng], {
       radius: 500,
@@ -433,6 +457,15 @@
       fillColor: '#dbeafe',
       fillOpacity: 0.08
     }).addTo(map).bindTooltip("Radius 1 KM", { sticky: true });
+
+    const circle2000 = L.circle([CENTER_POINT.lat, CENTER_POINT.lng], {
+      radius: 2000,
+      color: '#8b5cf6',
+      weight: 1,
+      dashArray: '8, 8',
+      fillColor: '#ede9fe',
+      fillOpacity: 0.05
+    }).addTo(map).bindTooltip("Radius 2 KM", { sticky: true });
 
     const centerIcon = L.divIcon({
       className: '',
@@ -536,7 +569,7 @@
     }
 
     function focusRadius(meters) {
-      const targetCircle = meters <= 500 ? circle500 : circle1000;
+      const targetCircle = meters <= 500 ? circle500 : (meters <= 1000 ? circle1000 : circle2000);
       map.fitBounds(targetCircle.getBounds().pad(0.2));
     }
 

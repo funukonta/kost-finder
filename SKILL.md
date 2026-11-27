@@ -67,16 +67,17 @@ Read `assets/template.html` in this skill directory and use it as the base templ
 
 #### Mandatory Map & UI Requirements (Zero API Key Errors!)
 1. **Free Tile Layers Only (No API Key Required)**:
-   - Keep both base layers already in `assets/template.html`:
-     - OpenStreetMap `https://tile.openstreetmap.org/{z}/{x}/{y}.png` (default when served over http/https)
-     - Carto Voyager raster `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png` (default when opened via `file://`)
-   - **Why two:** OSM's tile server rejects requests with no `Referer` header ("Access blocked"). A double-clicked HTML file (`file://`) sends none, so the map would be blank. Carto does not check Referer, so the file works without a server.
-   - Never use Stadia, Mapbox, or Google Maps JS API tiles; they require an API key and show watermarks.
+   - Use the Esri ArcGIS layers already in `assets/template.html`:
+     - Street map (default): `https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}`
+     - Satellite: `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`
+   - **Why Esri:** `tile.openstreetmap.org` returns `403 Access Blocked` for requests with no `Referer` (a double-clicked `file://` page) and for sandboxed iframe previews. Esri works in both.
+   - **Fallback:** the template listens for `tileerror`. If tiles keep failing with none loaded (offline, strict network), it removes the tile layers and shows a clean grid, keeping markers and radius circles.
+   - Never use `tile.openstreetmap.org`, Stadia, Mapbox, or Google Maps JS API tiles; they are blocked or need an API key.
 2. **Standard Google Maps Links**:
    - Use `https://www.google.com/maps?q=<encoded_query>` for external Google Maps buttons.
 3. **Visual Map Features**:
    - Center marker (`🏢`) at the target landmark with a red badge.
-   - Radius circles at **500m** (walking zone) and **1,000m** (short ride zone).
+   - Radius circles at **500m** (walking zone), **1,000m** (short ride zone), and **2,000m**.
    - Color-coded numbered pins (`#1`–`#N`) for Top Recommendations, Favorite/Highlighted Kos, Kos Putra, Kos Putri, and Kos Campur.
    - Clicking any card or `"🎯 Lihat di Peta"` button pans/zooms the map, opens the marker popup, and draws a dashed polyline from the target landmark to that kos.
    - Interactive search input + filter buttons by Kos Type and Top Recommendations.
@@ -86,9 +87,4 @@ Read `assets/template.html` in this skill directory and use it as the base templ
 ### Step 6: Provide Run Instructions
 After writing the HTML file(s), tell the user:
 1. The exact file path generated.
-2. That they can simply double-click the HTML file to open it (the map uses Carto tiles on `file://`).
-3. Optionally, for the standard OpenStreetMap layer by default, serve it locally:
-   ```bash
-   python3 -m http.server 8000
-   ```
-   and open `http://localhost:8000/`.
+2. That they can simply double-click the HTML file to open it. No server needed.

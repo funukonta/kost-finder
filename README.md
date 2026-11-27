@@ -66,13 +66,7 @@ Then ask it to find you a kos. This version searches the web and saves the HTML 
 
 ## 🚀 Open your results
 
-Double-click the HTML file. That's it, the map loads right in your browser.
-
-Prefer the classic OpenStreetMap look? Run this in the same folder, then go to **http://localhost:8000**:
-
-```bash
-python3 -m http.server 8000
-```
+Double-click the HTML file. That's it, the map loads right in your browser. No server, no setup.
 
 ## 📍 Good to know
 
